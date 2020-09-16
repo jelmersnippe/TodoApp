@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import styled from 'styled-components'
 import { useStateProviderValue, actions } from '../StateProvider';
 
-const STATUS = {
+export const STATUS = {
     todo: "todo",
     inProgress: "in progress",
     done: "done",
@@ -17,24 +17,6 @@ const SpecificProject = ({route, navigation}) => {
     useEffect(() => {
         setTodos(projects.find((project) => project.id === route.params.projectId).todos)
     }, [projects, route.params.projectId])
-
-    const getNextId = () => {
-        // Loop through all project items
-        // Return the largest number id
-        // Then add 1 and return this as the 'Next Id'
-        return todos.reduce((acc, cur) => {
-            if (cur.id > acc) return cur.id
-            else return acc
-        }, 0) + 1;
-    }
-
-    const addTodoItem = () => {
-        dispatch({
-            type: actions.addTodoItem,
-            projectId: route.params.projectId,
-            todo: {id: getNextId(), title: 'new todo', status: STATUS.todo}
-        })
-    }
 
     const removeTodoItem = (todoId) => {
         dispatch({
@@ -57,14 +39,14 @@ const SpecificProject = ({route, navigation}) => {
         if(item.status === STATUS.done) {
             return (
                 <DoneItem>
-                    <Text>{item.title} - {item.id} - {item.status}</Text>
+                    <Text>{item.title}</Text>
                 </DoneItem>
             )
         }
         return (
             <TodoItem>
                 <IconButton onPress={() => removeTodoItem(item.id)}><Icon name="times" /></IconButton>
-                <Text>{item.title} - {item.id} - {item.status}</Text>
+                <Text>{item.title} - {item.status}</Text>
                 <MainActions>
                     <IconButton onPress={() => alert('Edit item')}><Icon name="pen" /></IconButton>
                     <IconButton onPress={() => setTodoItemDone(item.id)}><Icon name="check" /></IconButton>
@@ -76,7 +58,7 @@ const SpecificProject = ({route, navigation}) => {
     return (
         <SafeAreaView style={{flex: 1}}>
             <Title>Specific Project {route.params.projectId}</Title>
-            <AddButton onPress={() => addTodoItem()}><Text>Add todo item</Text><Icon name="plus" /></AddButton>
+            <AddButton onPress={() => navigation.navigate('Add Todo Item', {projectId: route.params.projectId, todos: todos})}><Text>Add todo item</Text><Icon name="plus" /></AddButton>
             <FlatList
                 data={todos}
                 renderItem={renderItem}

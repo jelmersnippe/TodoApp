@@ -7,23 +7,6 @@ import { useStateProviderValue, actions } from '../StateProvider';
 const ProjectsOverview = ({navigation}) => {
     const [{projects}, dispatch] = useStateProviderValue();
 
-    const getNextId = () => {
-        // Loop through all project items
-        // Return the largest number id
-        // Then add 1 and return this as the 'Next Id'
-        return projects.reduce((acc, cur) => {
-            if (cur.id > acc) return cur.id
-            else return acc
-        }, 0) + 1;
-    }
-
-    const addProject = () => {
-        dispatch({
-            type: actions.addProject, 
-            project: {id: getNextId(), title: 'New Project', todos: []}
-        })
-    }
-
     const removeProject = (projectId) => {
         dispatch({
             type: actions.removeProject,
@@ -34,15 +17,15 @@ const ProjectsOverview = ({navigation}) => {
     return (
         <SafeAreaView style={{flex: 1}}>
             <Title>Projects Overview</Title>
-            <AddButton onPress={() => addProject()}>
+            <AddButton onPress={() => navigation.navigate('Add Project')}>
                 <Text>Add project</Text><Icon name="plus" />
-                </AddButton>
+            </AddButton>
             <FlatList
                 data={projects}
                 renderItem={({item}) => (
                     <ProjectItem onPress={() => navigation.navigate('Specific Project', {projectId: item.id})}>
                         <IconButton onPress={() => removeProject(item.id)}><Icon name="times" /></IconButton>
-                        <Text>To {item.title} - {item.id.toString()}</Text>
+                        <Text>To {item.title}</Text>
                     </ProjectItem>
                 )}
                 keyExtractor={item => item.id}

@@ -6,7 +6,9 @@ import { StateProvider, reducer, initialState } from './src/StateProvider'
 
 import {
   ProjectsOverview,
-  SpecificProject
+  SpecificProject,
+  AddProjectScreen,
+  AddTodoItemScreen,
 } from './src/screens';
 
 const Stack = createStackNavigator()
@@ -18,6 +20,8 @@ const App = () => {
         <Stack.Navigator initialRouteName="Projects Overview">
           <Stack.Screen name="Projects Overview" component={ProjectsOverview} options={{ title: 'All Projects'}} />
           <Stack.Screen name="Specific Project" component={SpecificProject} />
+          <Stack.Screen name="Add Project" component={AddProjectScreen} />
+          <Stack.Screen name="Add Todo Item" component={AddTodoItemScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </StateProvider>
