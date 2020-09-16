@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FlatList, SafeAreaView, Text } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import styled from 'styled-components'
 import { useStateProviderValue, actions } from '../StateProvider';
@@ -10,12 +10,13 @@ export const STATUS = {
     done: "done",
 }
 
-const SpecificProject = ({route, navigation}) => {
+const SpecificTodoList = ({route, navigation}) => {
     const [{ projects }, dispatch] = useStateProviderValue();
-    const [todos, setTodos] = useState([])
+    const [ todos, setTodos ] = useState([])
 
     useEffect(() => {
         setTodos(projects.find((project) => project.id === route.params.projectId).todos)
+        navigation.setOptions({ title: projects.find((project) => project.id === route.params.projectId).title });
     }, [projects, route.params.projectId])
 
     const removeTodoItem = (todoId) => {
@@ -56,33 +57,46 @@ const SpecificProject = ({route, navigation}) => {
     }
 
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <Title>Specific Project {route.params.projectId}</Title>
-            <AddButton onPress={() => navigation.navigate('Add Todo Item', {projectId: route.params.projectId, todos: todos})}><Text>Add todo item</Text><Icon name="plus" /></AddButton>
-            <FlatList
+        <ScreenWrapper>
+            <Icon.Button 
+                style={styles.addButton}
+                name="plus" backgroundColor="transparent" color="black" 
+                onPress={() => navigation.navigate('Add Todo Item', {projectId: route.params.projectId, todos: todos})}
+            >
+                <Text>Add Todo Item</Text>
+            </Icon.Button>
+            <TodoList
                 data={todos}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={(item, index) => `list-item-${index}`}
             />
-        </SafeAreaView>
+        </ScreenWrapper>
     )
 }
 
-export default SpecificProject
+export default SpecificTodoList
 
+const styles = StyleSheet.create({
+    addButton: {
+        borderWidth: 1,
+        borderRadius: 8, 
+        marginLeft: 'auto'
+    }
+})
 
+const ScreenWrapper = styled.SafeAreaView`
+    flex: 1;
+    padding: 16px;
+`
 
-const Title = styled.Text`
-    font-size: 16px;
-    color: rebeccapurple;
-    text-align: center;
-    padding: 16px 0;
+const TodoList = styled.FlatList`
+    padding: 8px 0;
 `
 
 const TodoItem = styled.View`
     flex-direction: row;
     align-items: center;
-    margin: 8px;
+    margin-bottom: 8px;
     padding: 8px;
     border: 1px solid rebeccapurple;
 `
@@ -90,7 +104,7 @@ const TodoItem = styled.View`
 const DoneItem = styled.View`
     flex-direction: row;
     align-items: center;
-    margin: 8px;
+    margin-bottom: 8px;
     padding: 8px;
     border: 1px solid rebeccapurple;
     background: #ccc;

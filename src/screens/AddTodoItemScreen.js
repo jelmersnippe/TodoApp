@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import { useStateProviderValue, actions } from '../StateProvider';
-import { STATUS } from './SpecificProject';
+import { STATUS } from './SpecificTodoList';
 
 const AddTodoItemScreen = ({navigation, route}) => {
     const [value, onChangeText] = useState('');

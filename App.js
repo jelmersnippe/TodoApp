@@ -5,10 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { StateProvider, reducer, initialState } from './src/StateProvider'
 
 import {
-  ProjectsOverview,
-  SpecificProject,
-  AddProjectScreen,
-  AddTodoItemScreen,
+  TodoListOverview, SpecificTodoList, AddTodoListScreen, AddTodoItemScreen
 } from './src/screens';
 
 const Stack = createStackNavigator()
@@ -17,10 +14,11 @@ const App = () => {
   return (
     <StateProvider initialState={initialState} reducer={reducer}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Projects Overview">
-          <Stack.Screen name="Projects Overview" component={ProjectsOverview} options={{ title: 'All Projects'}} />
-          <Stack.Screen name="Specific Project" component={SpecificProject} />
-          <Stack.Screen name="Add Project" component={AddProjectScreen} />
+        <Stack.Navigator initialRouteName="Todo List Overview">
+          <Stack.Screen name="Todo List Overview" component={TodoListOverview} 
+            options={{ title: 'All Todo Lists'}} />
+          <Stack.Screen name="Specific Todo List" component={SpecificTodoList} />
+          <Stack.Screen name="Add Todo List" component={AddTodoListScreen} />
           <Stack.Screen name="Add Todo Item" component={AddTodoItemScreen} />
         </Stack.Navigator>
       </NavigationContainer>
@@ -28,4 +26,5 @@ const App = () => {
   )
 }
 
+// projects.filter((project) => project.id === route.params.projectId).title
 export default App

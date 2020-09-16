@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import { useStateProviderValue, actions } from '../StateProvider';
 
-const AddProjectScreen = ({navigation}) => {
+const AddTodoListScreen = ({navigation}) => {
     const [value, onChangeText] = useState('');
     const [{projects}, dispatch] = useStateProviderValue();
 
@@ -26,9 +26,9 @@ const AddProjectScreen = ({navigation}) => {
 
     return (
         <View>
-            <Text>Enter the name you want to give the new project</Text>
+            <Text>Enter the name you want to give the new todo list</Text>
             <TextInput 
-                placeholder="New Project" 
+                placeholder="New Todo List" 
                 onChangeText={text => onChangeText(text)}
                 value={value}
                 autoFocus={true}
@@ -38,4 +38,4 @@ const AddProjectScreen = ({navigation}) => {
     )
 }
 
-export default AddProjectScreen
+export default AddTodoListScreen

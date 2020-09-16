@@ -1,6 +1,6 @@
-import ProjectsOverview from './ProjectsOverview'
-import SpecificProject from './SpecificProject'
-import AddProjectScreen from './AddProjectScreen';
+import TodoListOverview from './TodoListOverview'
+import SpecificTodoList from './SpecificTodoList'
+import AddTodoListScreen from './AddTodoListScreen';
 import AddTodoItemScreen from './AddTodoItemScreen';
 
-export { ProjectsOverview, SpecificProject, AddProjectScreen, AddTodoItemScreen }
+export { TodoListOverview, SpecificTodoList, AddTodoListScreen, AddTodoItemScreen }

@@ -1,10 +1,10 @@
 import React from 'react'
-import { SafeAreaView, FlatList, Text } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 import styled from 'styled-components'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStateProviderValue, actions } from '../StateProvider';
 
-const ProjectsOverview = ({navigation}) => {
+const TodoListOverview = ({navigation}) => {
     const [{projects}, dispatch] = useStateProviderValue();
 
     const removeProject = (projectId) => {
@@ -15,36 +15,49 @@ const ProjectsOverview = ({navigation}) => {
     }
 
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <Title>Projects Overview</Title>
-            <AddButton onPress={() => navigation.navigate('Add Project')}>
-                <Text>Add project</Text><Icon name="plus" />
-            </AddButton>
-            <FlatList
+        <ScreenWrapper>
+            <Icon.Button 
+                style={styles.addButton}
+                name="plus" backgroundColor="transparent" color="black" 
+                onPress={() => navigation.navigate('Add Todo List')}
+            >
+                <Text>Add Todo List</Text>
+            </Icon.Button>
+            <ProjectList
                 data={projects}
                 renderItem={({item}) => (
-                    <ProjectItem onPress={() => navigation.navigate('Specific Project', {projectId: item.id})}>
+                    <ProjectItem onPress={() => navigation.navigate('Specific Todo List', {projectId: item.id})}>
                         <IconButton onPress={() => removeProject(item.id)}><Icon name="times" /></IconButton>
                         <Text>To {item.title}</Text>
                     </ProjectItem>
                 )}
-                keyExtractor={item => item.id}
+                keyExtractor={(item, index) => `list-item-${index}`}
             />
-        </SafeAreaView>
+        </ScreenWrapper>
     )
 }
 
-export default ProjectsOverview
+export default TodoListOverview
 
-const Title = styled.Text`
-    font-size: 16px;
-    color: rebeccapurple;
-    text-align: center;
-    padding: 16px 0;
+const styles = StyleSheet.create({
+    addButton: {
+        borderWidth: 1,
+        borderRadius: 8, 
+        marginLeft: 'auto'
+    }
+})
+
+const ScreenWrapper = styled.SafeAreaView`
+    flex: 1;
+    padding: 16px;
+`
+
+const ProjectList = styled.FlatList`
+    padding: 8px 0;
 `
 
 const ProjectItem = styled.TouchableOpacity`
-    margin: 8px;
+    margin-bottom: 8px;
     padding: 8px;
     border: 2px solid rebeccapurple;
     border-radius: 8px;
@@ -56,7 +69,6 @@ const ProjectItem = styled.TouchableOpacity`
 const AddButton = styled.TouchableOpacity`
     border: 1px solid black;
     border-radius: 8px;
-    padding: 8px;
     flex-direction: row;
     align-items: center;
     align-self: flex-end;
