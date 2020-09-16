@@ -17,16 +17,31 @@ const ProjectsOverview = ({navigation}) => {
         }, 0) + 1;
     }
 
+    const addProject = () => {
+        dispatch({
+            type: actions.addProject, 
+            project: {id: getNextId(), title: 'New Project', todos: []}
+        })
+    }
+
+    const removeProject = (projectId) => {
+        dispatch({
+            type: actions.removeProject,
+            projectId: projectId
+        })
+    }
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <Title>Projects Overview</Title>
-            <AddButton onPress={() => dispatch({type: actions.addProject, project: {id: getNextId(), title: 'New Project', todos: []}})}>
+            <AddButton onPress={() => addProject()}>
                 <Text>Add project</Text><Icon name="plus" />
                 </AddButton>
             <FlatList
                 data={projects}
                 renderItem={({item}) => (
                     <ProjectItem onPress={() => navigation.navigate('Specific Project', {projectId: item.id})}>
+                        <IconButton onPress={() => removeProject(item.id)}><Icon name="times" /></IconButton>
                         <Text>To {item.title} - {item.id.toString()}</Text>
                     </ProjectItem>
                 )}
@@ -51,6 +66,8 @@ const ProjectItem = styled.TouchableOpacity`
     border: 2px solid rebeccapurple;
     border-radius: 8px;
     background: violet;
+    flex-direction: row;
+    align-items: center;
 `
 
 const AddButton = styled.TouchableOpacity`
@@ -60,4 +77,15 @@ const AddButton = styled.TouchableOpacity`
     flex-direction: row;
     align-items: center;
     align-self: flex-end;
+`
+
+const IconButton = styled.TouchableOpacity`
+    padding: 4px;
+    border: 1px solid black;
+    margin: 0 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
 `

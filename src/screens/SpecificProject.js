@@ -31,9 +31,46 @@ const SpecificProject = ({route, navigation}) => {
     const addTodoItem = () => {
         dispatch({
             type: actions.addTodoItem,
-            id: route.params.projectId,
+            projectId: route.params.projectId,
             todo: {id: getNextId(), title: 'new todo', status: STATUS.todo}
         })
+    }
+
+    const removeTodoItem = (todoId) => {
+        dispatch({
+            type: actions.removeTodoItem,
+            projectId: route.params.projectId,
+            todoId: todoId,
+        })
+    }
+
+    const setTodoItemDone = (todoId) => {
+        dispatch({
+            type: actions.setTodoItemStatus,
+            projectId: route.params.projectId,
+            todoId: todoId,
+            status: STATUS.done,
+        })
+    }
+
+    const renderItem = ( {item} ) => {
+        if(item.status === STATUS.done) {
+            return (
+                <DoneItem>
+                    <Text>{item.title} - {item.id} - {item.status}</Text>
+                </DoneItem>
+            )
+        }
+        return (
+            <TodoItem>
+                <IconButton onPress={() => removeTodoItem(item.id)}><Icon name="times" /></IconButton>
+                <Text>{item.title} - {item.id} - {item.status}</Text>
+                <MainActions>
+                    <IconButton onPress={() => alert('Edit item')}><Icon name="pen" /></IconButton>
+                    <IconButton onPress={() => setTodoItemDone(item.id)}><Icon name="check" /></IconButton>
+                </MainActions>
+            </TodoItem>
+        )
     }
 
     return (
@@ -42,18 +79,7 @@ const SpecificProject = ({route, navigation}) => {
             <AddButton onPress={() => addTodoItem()}><Text>Add todo item</Text><Icon name="plus" /></AddButton>
             <FlatList
                 data={todos}
-                renderItem={({item}) => (
-                    <TodoItem>
-                        <IconButton onPress={() => alert('Remove item')}><Icon name="times" /></IconButton>
-                        <Text>{item.title} - {item.id}</Text>
-                        {item.status !== STATUS.done && 
-                        <MainActions>
-                            <IconButton onPress={() => alert('Edit item')}><Icon name="pen" /></IconButton>
-                            <IconButton onPress={() => alert('Set item as done')}><Icon name="check" /></IconButton>
-                        </MainActions>
-                        }
-                    </TodoItem>
-                )}
+                renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
         </SafeAreaView>
@@ -77,6 +103,15 @@ const TodoItem = styled.View`
     margin: 8px;
     padding: 8px;
     border: 1px solid rebeccapurple;
+`
+
+const DoneItem = styled.View`
+    flex-direction: row;
+    align-items: center;
+    margin: 8px;
+    padding: 8px;
+    border: 1px solid rebeccapurple;
+    background: #ccc;
 `
 
 const MainActions = styled.View`
