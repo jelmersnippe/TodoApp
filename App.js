@@ -4,12 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {StateProvider, reducer, initialState} from './src/StateProvider';
 
-import {
-  TodoListOverview,
-  SpecificTodoList,
-  AddTodoListScreen,
-  AddTodoItemScreen,
-} from './src/screens';
+import {TodoListOverview, SpecificTodoList, InputScreen} from './src/screens';
 
 const Stack = createStackNavigator();
 
@@ -27,8 +22,7 @@ const App = () => {
             name="Specific Todo List"
             component={SpecificTodoList}
           />
-          <Stack.Screen name="Add Todo List" component={AddTodoListScreen} />
-          <Stack.Screen name="Add Todo Item" component={AddTodoItemScreen} />
+          <Stack.Screen name="Input Screen" component={InputScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </StateProvider>

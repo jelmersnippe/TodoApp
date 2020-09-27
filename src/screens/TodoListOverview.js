@@ -4,9 +4,17 @@ import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useStateProviderValue, actions, projectsKey} from '../StateProvider';
 import AsyncStorage from '@react-native-community/async-storage';
+import {GetNextId} from '../Utils/GetNextId';
 
 const TodoListOverview = ({navigation}) => {
   const [{projects}, dispatch] = useStateProviderValue();
+
+  const addProject = (title) => {
+    dispatch({
+      type: actions.addProject,
+      project: {id: GetNextId(projects), title: title, todos: []},
+    });
+  };
 
   const getProjects = async () => {
     return await AsyncStorage.getItem(projectsKey);
@@ -46,7 +54,16 @@ const TodoListOverview = ({navigation}) => {
 
   return (
     <ScreenWrapper>
-      <AddButton onPress={() => navigation.navigate('Add Todo List')}>
+      <AddButton
+        onPress={() =>
+          navigation.navigate('Input Screen', {
+            headerText: 'Add Todo List',
+            title: 'New Todo List',
+            inputPlaceholder: 'New Todo List',
+            submitText: 'Add',
+            callback: (value) => addProject(value),
+          })
+        }>
         <Icon style={{marginRight: 8}} name="plus" color="black" />
         <Text>Add Todo List</Text>
       </AddButton>

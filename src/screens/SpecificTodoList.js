@@ -3,6 +3,8 @@ import {Alert, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import styled from 'styled-components';
 import {useStateProviderValue, actions} from '../StateProvider';
+import {GetNextId} from '../Utils/GetNextId';
+import {TitleAlreadyInUse} from '../Utils/TitleAlreadyInUse';
 
 export const STATUS = {
   todo: 'todo',
@@ -42,6 +44,27 @@ const SpecificTodoList = ({route, navigation}) => {
     ]);
   };
 
+  const updateTodoItemTitle = (id, title) => {
+    TitleAlreadyInUse(todos, title)
+      ? alert('Title already in use')
+      : dispatch({
+          type: actions.setTodoItemTitle,
+          projectId: route.params.projectId,
+          todoId: id,
+          title: title,
+        });
+  };
+
+  const addTodoItem = (title) => {
+    TitleAlreadyInUse(todos, title)
+      ? alert('Title already in use')
+      : dispatch({
+          type: actions.addTodoItem,
+          projectId: route.params.projectId,
+          todo: {id: GetNextId(todos), title: title, status: STATUS.todo},
+        });
+  };
+
   const setTodoItemDone = (todoId) => {
     dispatch({
       type: actions.setTodoItemStatus,
@@ -55,7 +78,7 @@ const SpecificTodoList = ({route, navigation}) => {
     if (item.status === STATUS.done) {
       return (
         <DoneItem>
-          <Text>{item.title}</Text>
+          <DoneText>{item.title}</DoneText>
         </DoneItem>
       );
     }
@@ -64,11 +87,20 @@ const SpecificTodoList = ({route, navigation}) => {
         <IconButton onPress={() => removeTodoItem(item)}>
           <Icon name="times" />
         </IconButton>
-        <Text>
-          {item.title} - {item.status}
-        </Text>
+        <Text>{item.title}</Text>
         <MainActions>
-          <IconButton onPress={() => alert('Edit item')}>
+          <IconButton
+            onPress={() => {
+              navigation.navigate('Input Screen', {
+                headerText: `Update "${item.title}"`,
+                title: `Update "${item.title}"`,
+                initialValue: item.title,
+                submitText: 'Update',
+                callback: (value) => {
+                  updateTodoItemTitle(item.id, value);
+                },
+              });
+            }}>
             <Icon name="pen" />
           </IconButton>
           <IconButton onPress={() => setTodoItemDone(item.id)}>
@@ -83,9 +115,12 @@ const SpecificTodoList = ({route, navigation}) => {
     <ScreenWrapper>
       <AddButton
         onPress={() =>
-          navigation.navigate('Add Todo Item', {
-            projectId: route.params.projectId,
-            todos: todos,
+          navigation.navigate('Input Screen', {
+            headerText: 'Add Todo Item',
+            title: 'New Todo Item',
+            inputPlaceholder: 'New Todo Item',
+            submitText: 'Add',
+            callback: addTodoItem,
           })
         }>
         <Icon style={{marginRight: 8}} name="plus" color="black" />
@@ -120,12 +155,17 @@ const TodoItem = styled.View`
 `;
 
 const DoneItem = styled.View`
+  position: relative;
   flex-direction: row;
   align-items: center;
   margin-bottom: 8px;
   padding: 8px;
   border: 1px solid black;
   background: #ccc;
+`;
+
+const DoneText = styled.Text`
+  text-decoration: line-through;
 `;
 
 const MainActions = styled.View`

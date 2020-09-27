@@ -29,6 +29,7 @@ export const actions = {
   addTodoItem: 'ADD_TODO_ITEM',
   removeTodoItem: 'REMOVE_TODO_ITEM',
   setTodoItemStatus: 'SET_TODO_ITEM_STATUS',
+  setTodoItemTitle: 'SET_TODO_ITEM_TITLE',
 };
 
 // Handling for all actions
@@ -90,6 +91,30 @@ export const reducer = (state, action) => {
         ...state,
         projects: newProjectsObject,
       };
+    case 'SET_TODO_ITEM_TITLE':
+      var project = state.projects.find(
+        (project) => project.id === action.projectId,
+      );
+      var todo = project.todos.find((todo) => todo.id === action.todoId);
+      todo.title = action.title;
+
+      var filteredTodos = project.todos.filter(
+        (todo) => todo.id !== action.todoId,
+      );
+
+      project.todos = [todo, ...filteredTodos];
+
+      var filteredProjects = state.projects.filter(
+        (project) => project.id !== action.projectId,
+      );
+
+      var newProjectsObject = [project, ...filteredProjects];
+      AsyncStorage.setItem(projectsKey, JSON.stringify(newProjectsObject));
+
+      return {
+        ...state,
+        projects: newProjectsObject,
+      };
     case 'SET_TODO_ITEM_STATUS':
       var project = state.projects.find(
         (project) => project.id === action.projectId,
@@ -100,10 +125,14 @@ export const reducer = (state, action) => {
       var filteredTodos = project.todos.filter(
         (todo) => todo.id !== action.todoId,
       );
+
+      var todoItems = filteredTodos.filter((todo) => todo.status === 'todo');
+      var doneItems = filteredTodos.filter((todo) => todo.status === 'done');
+
       project.todos =
         todo.status === 'done'
-          ? [...filteredTodos, todo]
-          : [todo, ...filteredTodos];
+          ? [...todoItems, todo, ...doneItems]
+          : [todo, ...todoItems, ...doneItems];
 
       var filteredProjects = state.projects.filter(
         (project) => project.id !== action.projectId,
