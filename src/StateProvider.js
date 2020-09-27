@@ -100,7 +100,10 @@ export const reducer = (state, action) => {
       var filteredTodos = project.todos.filter(
         (todo) => todo.id !== action.todoId,
       );
-      project.todos = [todo, ...filteredTodos];
+      project.todos =
+        todo.status === 'done'
+          ? [...filteredTodos, todo]
+          : [todo, ...filteredTodos];
 
       var filteredProjects = state.projects.filter(
         (project) => project.id !== action.projectId,

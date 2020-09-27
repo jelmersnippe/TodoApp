@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Text, StyleSheet} from 'react-native';
+import {Text, Alert} from 'react-native';
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useStateProviderValue, actions, projectsKey} from '../StateProvider';
@@ -12,11 +12,21 @@ const TodoListOverview = ({navigation}) => {
     return await AsyncStorage.getItem(projectsKey);
   };
 
-  const removeProject = (projectId) => {
-    dispatch({
-      type: actions.removeProject,
-      projectId: projectId,
-    });
+  const removeProject = (project) => {
+    Alert.alert(`Delete "${project.title}"`, `Are you sure?`, [
+      {
+        text: 'Cancel',
+      },
+      {
+        text: 'Delete',
+        onPress: () => {
+          dispatch({
+            type: actions.removeProject,
+            projectId: project.id,
+          });
+        },
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -36,14 +46,10 @@ const TodoListOverview = ({navigation}) => {
 
   return (
     <ScreenWrapper>
-      <Icon.Button
-        style={styles.addButton}
-        name="plus"
-        backgroundColor="transparent"
-        color="black"
-        onPress={() => navigation.navigate('Add Todo List')}>
+      <AddButton onPress={() => navigation.navigate('Add Todo List')}>
+        <Icon style={{marginRight: 8}} name="plus" color="black" />
         <Text>Add Todo List</Text>
-      </Icon.Button>
+      </AddButton>
       <ProjectList
         data={projects}
         renderItem={({item}) => (
@@ -51,10 +57,15 @@ const TodoListOverview = ({navigation}) => {
             onPress={() =>
               navigation.navigate('Specific Todo List', {projectId: item.id})
             }>
-            <IconButton onPress={() => removeProject(item.id)}>
+            <IconButton onPress={() => removeProject(item)}>
               <Icon name="times" />
             </IconButton>
-            <Text>To {item.title}</Text>
+            <Text>{item.title}</Text>
+            <Icon
+              style={{marginLeft: 'auto', padding: 4}}
+              name="arrow-right"
+              color="black"
+            />
           </ProjectItem>
         )}
         keyExtractor={(item, index) => `list-item-${index}`}
@@ -64,14 +75,6 @@ const TodoListOverview = ({navigation}) => {
 };
 
 export default TodoListOverview;
-
-const styles = StyleSheet.create({
-  addButton: {
-    borderWidth: 1,
-    borderRadius: 8,
-    marginLeft: 'auto',
-  },
-});
 
 const ScreenWrapper = styled.SafeAreaView`
   flex: 1;
@@ -85,9 +88,8 @@ const ProjectList = styled.FlatList`
 const ProjectItem = styled.TouchableOpacity`
   margin-bottom: 8px;
   padding: 8px;
-  border: 2px solid rebeccapurple;
+  border: 2px solid black;
   border-radius: 8px;
-  background: violet;
   flex-direction: row;
   align-items: center;
 `;
@@ -98,15 +100,14 @@ const AddButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   align-self: flex-end;
+  padding: 8px 16px;
 `;
 
 const IconButton = styled.TouchableOpacity`
   padding: 4px;
-  border: 1px solid black;
   margin: 0 4px;
   width: 24px;
   height: 24px;
-  border-radius: 12px;
   justify-content: center;
   align-items: center;
 `;
