@@ -1,7 +1,6 @@
 # Todo App
 
-<img src="./screenshots/todo-list.png" width="240px" height="520px"/>  
-<img src="./screenshots/todo-items.png" width="240px" height="520px"/> 
+<img src="./screenshots/todo-list.png" width="240px" height="520px"/>  <img src="./screenshots/todo-items.png" width="240px" height="520px"/> 
 
 
 An application built in React Native to register todo lists and add items to them.
