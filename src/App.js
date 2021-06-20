@@ -2,9 +2,10 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {StateProvider, reducer, initialState} from './src/StateProvider';
-
-import {TodoListOverview, SpecificTodoList, InputScreen} from './src/screens';
+import {StateProvider, reducer, initialState} from './StateProvider';
+import TodoListOverview from './screens/TodoListOverview';
+import SpecificTodoList from './screens/SpecificTodoList';
+import InputScreen from './screens/InputScreen';
 
 const Stack = createStackNavigator();
 

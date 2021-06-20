@@ -1,94 +1,94 @@
 import React, {useEffect} from 'react';
-import {Text, Alert} from 'react-native';
+import {Alert, Text} from 'react-native';
 import styled from 'styled-components';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {useStateProviderValue, actions, projectsKey} from '../StateProvider';
+import {actions, projectsKey, useStateProviderValue} from '../StateProvider';
 import AsyncStorage from '@react-native-community/async-storage';
 import {GetNextId} from '../Utils/GetNextId';
 
 const TodoListOverview = ({navigation}) => {
-  const [{projects}, dispatch] = useStateProviderValue();
+    const [{projects}, dispatch] = useStateProviderValue();
 
-  const addProject = (title) => {
-    dispatch({
-      type: actions.addProject,
-      project: {id: GetNextId(projects), title: title, todos: []},
-    });
-  };
+    const addProject = (title) => {
+        dispatch({
+            type: actions.addProject,
+            project: {id: GetNextId(projects), title: title, todos: []},
+        });
+    };
 
-  const getProjects = async () => {
-    return await AsyncStorage.getItem(projectsKey);
-  };
+    const getProjects = async () => {
+        return await AsyncStorage.getItem(projectsKey);
+    };
 
-  const removeProject = (project) => {
-    Alert.alert(`Delete "${project.title}"`, `Are you sure?`, [
-      {
-        text: 'Cancel',
-      },
-      {
-        text: 'Delete',
-        onPress: () => {
-          dispatch({
-            type: actions.removeProject,
-            projectId: project.id,
-          });
-        },
-      },
-    ]);
-  };
+    const removeProject = (project) => {
+        Alert.alert(`Delete "${project.title}"`, 'Are you sure?', [
+            {
+                text: 'Cancel',
+            },
+            {
+                text: 'Delete',
+                onPress: () => {
+                    dispatch({
+                        type: actions.removeProject,
+                        projectId: project.id,
+                    });
+                },
+            },
+        ]);
+    };
 
-  useEffect(() => {
-    getProjects()
-      .then((response) => {
-        if (response && response.length !== 0) {
-          dispatch({
-            type: actions.setProjects,
-            projects: JSON.parse(response),
-          });
-        }
-      })
-      .catch((error) => {
-        alert('Error getting your todos: \n' + error);
-      });
-  }, []);
+    useEffect(() => {
+        getProjects()
+            .then((response) => {
+                if (response && response.length !== 0) {
+                    dispatch({
+                        type: actions.setProjects,
+                        projects: JSON.parse(response),
+                    });
+                }
+            })
+            .catch((error) => {
+                alert('Error getting your todos: \n' + error);
+            });
+    }, []);
 
-  return (
-    <ScreenWrapper>
-      <AddButton
-        onPress={() =>
-          navigation.navigate('Input Screen', {
-            headerText: 'Add Todo List',
-            title: 'New Todo List',
-            inputPlaceholder: 'New Todo List',
-            submitText: 'Add',
-            callback: (value) => addProject(value),
-          })
-        }>
-        <Icon style={{marginRight: 8}} name="plus" color="black" />
-        <Text>Add Todo List</Text>
-      </AddButton>
-      <ProjectList
-        data={projects}
-        renderItem={({item}) => (
-          <ProjectItem
-            onPress={() =>
-              navigation.navigate('Specific Todo List', {projectId: item.id})
-            }>
-            <IconButton onPress={() => removeProject(item)}>
-              <Icon name="times" />
-            </IconButton>
-            <Text>{item.title}</Text>
-            <Icon
-              style={{marginLeft: 'auto', padding: 4}}
-              name="arrow-right"
-              color="black"
+    return (
+        <ScreenWrapper>
+            <AddButton
+                onPress={() =>
+                    navigation.navigate('Input Screen', {
+                        headerText: 'Add Todo List',
+                        title: 'New Todo List',
+                        inputPlaceholder: 'New Todo List',
+                        submitText: 'Add',
+                        callback: (value) => addProject(value),
+                    })
+                }>
+                <Icon style={{marginRight: 8}} name="plus" color="black"/>
+                <Text>Add Todo List</Text>
+            </AddButton>
+            <ProjectList
+                data={projects}
+                renderItem={({item}) => (
+                    <ProjectItem
+                        onPress={() =>
+                            navigation.navigate('Specific Todo List', {projectId: item.id})
+                        }>
+                        <IconButton onPress={() => removeProject(item)}>
+                            <Icon name="times"/>
+                        </IconButton>
+                        <Text>{item.title}</Text>
+                        <Icon
+                            style={{marginLeft: 'auto', padding: 4}}
+                            name="arrow-right"
+                            color="black"
+                        />
+                    </ProjectItem>
+                )}
+                keyExtractor={(item, index) => `list-item-${index}`}
             />
-          </ProjectItem>
-        )}
-        keyExtractor={(item, index) => `list-item-${index}`}
-      />
-    </ScreenWrapper>
-  );
+        </ScreenWrapper>
+    );
 };
 
 export default TodoListOverview;
